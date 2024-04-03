@@ -1,4 +1,4 @@
 export const formatPrice = (price: number) => {
-  return price.toLocaleString("es", { maximumFractionDigits: 0 });
+  return price.toLocaleString("es", { maximumFractionDigits: 3 });
 };
 

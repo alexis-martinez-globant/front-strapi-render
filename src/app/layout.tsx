@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader"
 import Header from "./components/Header";
+import CartProvider from "@/context/CartContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +24,10 @@ export default function RootLayout({
         <NextTopLoader color="#00ff00" />
         <main
           className="container mx-auto max-w-3xl mt-4 space-y-4">
-          <Header />
-          {children}
+          <CartProvider>
+            <Header />
+            {children}
+          </CartProvider>
         </main>
       </body>
     </html>

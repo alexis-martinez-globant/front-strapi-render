@@ -1,9 +1,9 @@
 "use client";
+import { Book } from "@/app/interfaces/book";
 
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import { Book } from "@/app/interfaces/book";
-import { getStrapiURL } from "@/helpers/api-helper";
+// import { getStrapiURL } from "@/helpers/api-helper";
 import Image from "next/image";
 import { cn } from "@/helpers/classnames";
 import { cartContext } from "@/context/CartContext";
@@ -14,9 +14,14 @@ interface Props {
 }
 
 const PageCardImage = ({ book }: Props) => {
+    const imageUrl = book.attributes.image.data.attributes.url;
+    // const imageUrl2 = book.attributes.image.data.attributes.formats.medium.url;
     const { id } = book;
     const { title, description, price, image, stock } = book.attributes;
-    const { url, width, height } = image.data.attributes.formats.thumbnail;
+
+    const texto = description[0].children[0].text;
+
+    // const { url, width, height } = image.data.attributes.formats.thumbnail;
 
     const { addCartProducts } = useContext(cartContext);
     const router = useRouter();
@@ -27,14 +32,17 @@ const PageCardImage = ({ book }: Props) => {
     };
 
     return (
+
         <div className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            {/* <Image
+            <Image
                 className="rounded-t-lg w-full"
-                src={getStrapiURL(url)}
+                src={imageUrl}
+                // src={getStrapiURL(imageUrl)}
                 alt={`imagen de ${title}`}
-                width={width}
-                height={height}
-            /> */}
+                width={250}
+                height={250}
+                priority
+            />
 
             <div className="p-5">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -47,8 +55,9 @@ const PageCardImage = ({ book }: Props) => {
                 <p className="text-gray-500 mb-2 text-lg">
                     Stock: {formatPrice(stock)} unidades
                 </p>
+
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    {description}
+                    {texto}
                 </p>
                 <button
                     onClick={handleAddToCart}
@@ -74,6 +83,7 @@ const PageCardImage = ({ book }: Props) => {
                 </button>
             </div>
         </div>
+
     );
 };
 export default PageCardImage;

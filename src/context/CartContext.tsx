@@ -29,93 +29,67 @@ interface Props {
 
 export const cartContext = createContext({} as ProductCartContext);
 
-export default ({ children }: Props) => {
+const CartProvider = ({ children }: Props) => {
     const [cartProducts, setCartProducts] = useState<ProductCart[]>([]);
 
     const addCartProducts = ({ id, title, price }: ProductCartItem) => {
         if (cartProducts.length === 0) {
-            return setCartProducts([{ id, title, price, quantity: 1 }]);
+            return setCartProducts([{ id, title, price, quantity: 1 }])
         }
 
-        const productExist = cartProducts.find((item) => item.id === id);
-
+        const productExist = cartProducts.find(p => p.id === id);
         if (!productExist) {
-            return setCartProducts([
-                ...cartProducts,
-                { id, title, price, quantity: 1 },
-            ]);
+            return setCartProducts([...cartProducts, { id, title, price, quantity: 1 }])
         }
 
         setCartProducts(
-            cartProducts.map((item) => {
-                if (item.id === id) {
-                    return {
-                        ...item,
-                        quantity: item.quantity + 1,
-                    };
+            cartProducts.map(p => {
+                if (p.id === id) {
+                    return { ...p, quantity: p.quantity + 1 }
                 } else {
-                    return item;
+                    return p;
                 }
             })
-        );
-    };
+        )
+    }
 
     const increaseQuantity = (id: number) => {
         setCartProducts(
-            cartProducts.map((item) => {
-                if (item.id === id) {
-                    return {
-                        ...item,
-                        quantity: item.quantity + 1,
-                    };
+            cartProducts.map(p => {
+                if (p.id === id) {
+                    return { ...p, quantity: p.quantity + 1 }
                 } else {
-                    return item;
+                    return p;
                 }
             })
-        );
-    };
-
+        )
+    }
     const decreaseQuantity = (id: number) => {
-        if (cartProducts.find((item) => item.id === id)?.quantity === 1) {
-            return setCartProducts(cartProducts.filter((item) => item.id !== id));
+
+        if (cartProducts.find(i => i.id === id)?.quantity === 1) {
+            return setCartProducts(cartProducts.filter(i => i.id !== id));
         }
 
         setCartProducts(
-            cartProducts.map((item) => {
-                if (item.id === id) {
-                    return {
-                        ...item,
-                        quantity: item.quantity - 1,
-                    };
+            cartProducts.map(p => {
+                if (p.id === id) {
+                    return { ...p, quantity: p.quantity - 1 }
                 } else {
-                    return item;
+                    return p;
                 }
             })
-        );
-    };
+        )
+    }
 
-    const totalQuantityProduct = cartProducts.reduce(
-        (acc, current) => current.quantity + acc,
-        0
-    );
+    const totalQuantityProduct = cartProducts.reduce((acc, item) => acc + item.quantity, 0);
+    const totalPriceProduct = cartProducts.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
-    const totalPriceProduct = cartProducts.reduce(
-        (acc, current) => current.price * current.quantity + acc,
-        0
-    );
 
     return (
-        <cartContext.Provider
-            value={{
-                cartProducts,
-                addCartProducts,
-                increaseQuantity,
-                decreaseQuantity,
-                totalQuantityProduct,
-                totalPriceProduct,
-            }}
-        >
+        <cartContext.Provider value={{ cartProducts, addCartProducts, increaseQuantity, decreaseQuantity, totalQuantityProduct, totalPriceProduct }}>
             {children}
         </cartContext.Provider>
-    );
-};
+    )
+}
+
+export default CartProvider;
